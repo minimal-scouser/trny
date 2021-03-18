@@ -16,12 +16,13 @@
     "react",
     "angular",
     "vue",
-    "opensource",
     "js",
     "npm",
     "github",
     "android",
-    "ios"
+    "ios",
+    "message",
+    "transactional"
   ],
   "author": "syed_pasha",
   "license": "ISC",
