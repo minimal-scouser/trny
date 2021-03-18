@@ -16,42 +16,42 @@ function getTypeOfTransaction(message) {
 }
 
 function getCard(message) {
-  const cardIndex = message.indexOf("card");
-  let card = { type: "", no: "" };
+  const cardIndex = message.indexOf('card');
+  let card = { type: '', no: '' };
 
   // Search for "card" and if not found return empty obj
   if (cardIndex !== -1) {
     card.no = message[cardIndex + 1];
-    card.type = "card";
+    card.type = 'card';
 
     // If the data is false positive
     // return empty obj
     // Else return the card info
     if (isNaN(Number(card.no))) {
       return {
-        type: "",
-        no: ""
+        type: '',
+        no: '',
       };
     } else {
       return card;
     }
   } else {
-    return { type: "", no: "" };
+    return { type: '', no: '' };
   }
 }
 
 function getAccount(message) {
-  const accountIndex = message.indexOf("ac");
+  const accountIndex = message.indexOf('ac');
   let account = {
-    type: "",
-    no: ""
+    type: '',
+    no: '',
   };
 
   // No occurence of the word "ac". Check for "card"
   if (accountIndex !== -1) {
     // find index of ac
     account.no = message[accountIndex + 1];
-    account.type = "account";
+    account.type = 'account';
 
     // If wrong data is found or if it is a false positive
     // Search fot "card"
@@ -66,23 +66,64 @@ function getAccount(message) {
   }
 }
 
+function trimLeadingAndTrailingChars(str) {
+  const strLength = str.length;
+
+  if (strLength < 3) {
+    return str;
+  } else {
+    const [first, last] = [str[0], str[strLength-1]];
+
+    if (isNaN(Number(last))) {
+      str = str.slice(0, -1);
+    }
+    if (isNaN(Number(first))) {
+      str = str.slice(1);
+    }
+  }
+}
+
 function getBalance(message) {
   for (const word of balanceKeywords) {
     if (message.includes(word)) {
       const words = message.split(' ');
       const keyWordWords = word.split(' ');
-      const index = words.indexOf(keyWordWords[0]);
-      let balance = words[index + keyWordWords.length];
+      let index = words.indexOf(keyWordWords[0]);
 
-      if (balance === 'rs.') {
-        balance = words[index + keyWordWords.length + 1];
-        return balance;
+      if (index === -1) {
+        return '';
       } else {
-        // loop until you find rs.
-        for (const [index, word] of words.entries()) {
-          if (word === 'rs.') {
-            return words[index + 1];
+        let balance = words[index + keyWordWords.length];
+
+        if (balance === 'rs.') {
+          const balanceIndex = index + keyWordWords.length + 1;
+
+          if (balanceIndex >= words.length) {
+            return '';
+          } else {
+            balance = trimLeadingAndTrailingChars(words[balanceIndex]);
+            balance = balance.replace(/,/g, "");
+
+            if (isNaN(Number(balance))) {
+              return "";
+            } 
+
+            return balance;
           }
+        } else {
+          // loop until you find rs.
+          while (index < words.length) {
+            if (words[index] === 'rs.') {
+              if (index + 1 < words.length) {
+                return words[index + 1];
+              } else {
+                return '';
+              }
+            }
+            ++index;
+          }
+
+          return '';
         }
       }
     }
@@ -90,29 +131,28 @@ function getBalance(message) {
 }
 
 function getMoney(message) {
-  const index = message.indexOf("rs.");
+  const index = message.indexOf('rs.');
 
   // If "rs." does not exist
   // Return ""
-
   if (index === -1) {
-    return "";
+    return '';
   } else {
     let money = message[index + 1];
 
-    money = money.replace(/,/, "");
+    money = money.replace(/,/g, '');
 
     // If data is false positive
     // Look ahead one index and check for valid money
     // Else return the found money
     if (isNaN(Number(money))) {
       money = message[index + 2];
-      money = money.replace(/,/, "");
+      money = money.replace(/,/g, '');
 
       // If this is also false positive, return ""
       // Else return the found money
       if (isNaN(Number(money))) {
-        return "";
+        return '';
       } else {
         return money;
       }
