@@ -90,21 +90,36 @@ function getBalance(message) {
 }
 
 function getMoney(message) {
-  const index = message.indexOf('rs.');
-  let money = message[index + 1];
-  money = money.replace(/,/, '');
+  const index = message.indexOf("rs.");
 
-  if (!Number(money)) {
-    money = message[index + 2];
-    money = money.replace(/,/, '');
+  // If "rs." does not exist
+  // Return ""
 
-    if (!Number(money)) {
-      return 'could not extract money';
+  if (index === -1) {
+    return "";
+  } else {
+    let money = message[index + 1];
+
+    money = money.replace(/,/, "");
+
+    // If data is false positive
+    // Look ahead one index and check for valid money
+    // Else return the found money
+    if (isNaN(Number(money))) {
+      money = message[index + 2];
+      money = money.replace(/,/, "");
+
+      // If this is also false positive, return ""
+      // Else return the found money
+      if (isNaN(Number(money))) {
+        return "";
+      } else {
+        return money;
+      }
     } else {
       return money;
     }
   }
-  return money;
 }
 
 function processMessage(message) {
