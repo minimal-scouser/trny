@@ -15,25 +15,55 @@ function getTypeOfTransaction(message) {
   }
 }
 
+function getCard(message) {
+  const cardIndex = message.indexOf("card");
+  let card = { type: "", no: "" };
+
+  // Search for "card" and if not found return empty obj
+  if (cardIndex !== -1) {
+    card.no = message[cardIndex + 1];
+    card.type = "card";
+
+    // If the data is false positive
+    // return empty obj
+    // Else return the card info
+    if (isNaN(Number(card.no))) {
+      return {
+        type: "",
+        no: ""
+      };
+    } else {
+      return card;
+    }
+  } else {
+    return { type: "", no: "" };
+  }
+}
+
 function getAccount(message) {
-  // find index of ac
+  const accountIndex = message.indexOf("ac");
   let account = {
-    type: 'account',
-    no: message[message.indexOf('ac') + 1],
+    type: "",
+    no: ""
   };
 
-  if (!Number(account.no)) {
-    // check for card
-    account.no = message[message.indexOf('card') + 1];
+  // No occurence of the word "ac". Check for "card"
+  if (accountIndex !== -1) {
+    // find index of ac
+    account.no = message[accountIndex + 1];
+    account.type = "account";
 
-    if (!Number(account.no)) {
-      return 'could not find account no';
+    // If wrong data is found or if it is a false positive
+    // Search fot "card"
+    // Else return the account data
+    if (isNaN(Number(account.no))) {
+      return getCard(message);
     } else {
-      account.type = 'card';
+      return account;
     }
+  } else {
+    return getCard(message);
   }
-
-  return account;
 }
 
 function getBalance(message) {
@@ -134,7 +164,7 @@ function removeItemAll(arr, value) {
 }
 
 module.exports = function getTransactionInfo(message) {
-  if (!message || typeof message !== "string") {
+  if (!message || typeof message !== 'string') {
     return {};
   }
 
