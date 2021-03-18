@@ -1,6 +1,6 @@
 {
   "name": "trny",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A javascript package that extracts transactional info from a string",
   "main": "index.js",
   "scripts": {},
