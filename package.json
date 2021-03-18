@@ -1,5 +1,5 @@
 {
-  "name": "@syed_pasha/mfm",
+  "name": "mfm",
   "version": "1.0.0",
   "description": "A javascript package that extracts transactional info from a string",
   "main": "index.js",
@@ -12,15 +12,18 @@
   },
   "keywords": [
     "money",
-    "android",
+    "amount",
+    "extract",
+    "javascript",
     "react",
     "angular",
+    "vue",
+    "opensource",
     "js",
-    "javascript",
-    "extract",
-    "account",
-    "open",
-    "source"
+    "npm",
+    "github",
+    "android",
+    "ios"
   ],
   "author": "syed_pasha",
   "license": "ISC",
