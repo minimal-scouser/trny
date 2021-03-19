@@ -80,6 +80,8 @@ function trimLeadingAndTrailingChars(str) {
     if (isNaN(Number(first))) {
       str = str.slice(1);
     }
+
+    return str;
   }
 }
 
@@ -101,6 +103,7 @@ function getBalance(message) {
           if (balanceIndex >= words.length) {
             return '';
           } else {
+            console.log(words[balanceIndex]);
             balance = trimLeadingAndTrailingChars(words[balanceIndex]);
             balance = balance.replace(/,/g, "");
 
@@ -230,9 +233,9 @@ module.exports = function getTransactionInfo(message) {
   const trn = getTypeOfTransaction(processedMessage);
 
   return {
-    accountNo: account,
+    account,
     balance,
-    money: money,
+    money,
     typeOfTransaction: trn,
   };
 };
