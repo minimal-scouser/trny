@@ -13,9 +13,15 @@ function getTypeOfTransaction(message) {
       return keyword;
     }
   }
+
+  return "";
 }
 
 function getCard(message) {
+  if (typeof message === "string") {
+    message = processMessage(message);
+  }
+
   const cardIndex = message.indexOf('card');
   let card = { type: '', no: '' };
 
@@ -41,6 +47,10 @@ function getCard(message) {
 }
 
 function getAccount(message) {
+  if (typeof message === "string") {
+    message = processMessage(message);
+  }
+
   const accountIndex = message.indexOf('ac');
   let account = {
     type: '',
@@ -72,7 +82,7 @@ function trimLeadingAndTrailingChars(str) {
   if (strLength < 3) {
     return str;
   } else {
-    const [first, last] = [str[0], str[strLength-1]];
+    const [first, last] = [str[0], str[strLength - 1]];
 
     if (isNaN(Number(last))) {
       str = str.slice(0, -1);
@@ -86,6 +96,12 @@ function trimLeadingAndTrailingChars(str) {
 }
 
 function getBalance(message) {
+  if (typeof message !== "string") {
+    return "";
+  }
+
+  message = processMessage(message).join(" ");
+
   for (const word of balanceKeywords) {
     if (message.includes(word)) {
       const words = message.split(' ');
@@ -103,13 +119,12 @@ function getBalance(message) {
           if (balanceIndex >= words.length) {
             return '';
           } else {
-            console.log(words[balanceIndex]);
             balance = trimLeadingAndTrailingChars(words[balanceIndex]);
-            balance = balance.replace(/,/g, "");
+            balance = balance.replace(/,/g, '');
 
             if (isNaN(Number(balance))) {
-              return "";
-            } 
+              return '';
+            }
 
             return balance;
           }
@@ -118,7 +133,11 @@ function getBalance(message) {
           while (index < words.length) {
             if (words[index] === 'rs.') {
               if (index + 1 < words.length) {
-                return words[index + 1];
+                balance = words.length;
+                balance = trimLeadingAndTrailingChars(words[index + 1]);
+                balance = balance.replace(/,/g, '');
+                
+                return balance;
               } else {
                 return '';
               }
@@ -131,9 +150,15 @@ function getBalance(message) {
       }
     }
   }
+
+  return "";
 }
 
-function getMoney(message) {
+function getMoneySpent(message) {
+  if (typeof message === "string") {
+    message = processMessage(message);
+  }
+
   const index = message.indexOf('rs.');
 
   // If "rs." does not exist
@@ -200,7 +225,6 @@ function processMessage(message) {
   message = message.replace(/rs. /g, 'rs.');
   // replace all 'rs.' with 'rs. '
   message = message.replace(/rs.(?=\w)/g, 'rs. ');
-  console.log(message);
   // split message into words
   message = message.split(' ');
   // remove '' from array
@@ -221,7 +245,7 @@ function removeItemAll(arr, value) {
   return arr;
 }
 
-module.exports = function getTransactionInfo(message) {
+function getTransactionInfo(message) {
   if (!message || typeof message !== 'string') {
     return {};
   }
@@ -229,8 +253,13 @@ module.exports = function getTransactionInfo(message) {
   const processedMessage = processMessage(message);
   const account = getAccount(processedMessage);
   const balance = getBalance(processedMessage.join(' '));
-  const money = getMoney(processedMessage);
-  const trn = getTypeOfTransaction(processedMessage);
+  const money = getMoneySpent(processedMessage);
+  let trn = "";
+  const isValid = [balance, money, account.no].filter(x => x !== "").length >= 2
+
+  if (isValid) {
+    trn = getTypeOfTransaction(processedMessage);
+  }
 
   return {
     account,
@@ -238,4 +267,15 @@ module.exports = function getTransactionInfo(message) {
     money,
     typeOfTransaction: trn,
   };
+}
+
+module.exports = {
+  getTransactionInfo,
+  getAccount,
+  getBalance,
+  getCard,
+  getMoneySpent,
+  getTypeOfTransaction,
+  processMessage,
+  removeItemAll,
 };

@@ -3,7 +3,9 @@
   "version": "1.0.4",
   "description": "A javascript package that extracts transactional info from a string",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "jest"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/minimal-scouser/trny.git"
@@ -29,5 +31,8 @@
   "bugs": {
     "url": "https://github.com/minimal-scouser/trny/issues"
   },
-  "homepage": "https://github.com/minimal-scouser/trny#readme"
+  "homepage": "https://github.com/minimal-scouser/trny#readme",
+  "devDependencies": {
+    "jest": "^26.6.3"
+  }
 }
