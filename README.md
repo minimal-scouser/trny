@@ -1,6 +1,6 @@
 # trny
 
-A javascript package that extracts transactional info from a string
+A javascript package that extracts transactional info like account number, money spent, balance and type of transaction from a string
 
 ## Installation
 
