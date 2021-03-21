@@ -1,6 +1,8 @@
 const engine = require('./engine');
 
-engine.getTransactionInfo("Avbl Bal for A/c XXXX0377  as on 30-06-2019 is INR 21719.25. Combined Avbl Bal is INR 21719.25. Use Mobile Banking App to track A/c (app.kotak.com)");
+engine.getTransactionInfo(
+  "Your SB A/c **12345 is Debited for Rs.100 on 01-01-2021 12:30:50 by Transfer. Avl Bal Rs:12345.30-Union Bank of India DOWNLOAD U MB HTTP://ONELINK.TO/BUYHR7",
+);
 
 module.exports = {
   getAccount: engine.getAccount,

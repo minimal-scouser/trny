@@ -41,6 +41,8 @@ test("valid transaction", () => {
     "INR Rs. 399 debited from A/c no. 098900 on Avl Bal-INR Rs. 57575",
     "Avbl Bal for A/c XXXX0377  as on 30-06-2019 is INR 21719.25. Combined Avbl Bal is INR 21719.25. Use Mobile Banking App to track A/c (app.kotak.com)",
     "Your sb a/c **00981 is debited for rs.80 on 22-02-2021 by transfer avl bal rs:6802.04",
+    "Rs49.0 debited@SBI UPI frm A/cX12345 on 18Dec20 RefNo 1212121212. If not done by u, fwd this SMS to 9223008333/Call 1800111109 or 09449112211 to block UPI",
+    "Your SB A/c **12345 is Debited for Rs.100 on 01-01-2021 12:30:50 by Transfer. Avl Bal Rs:12345.30-Union Bank of India DOWNLOAD U MB HTTP://ONELINK.TO/BUYHR7"
   ];
 
   const results = [
@@ -128,6 +130,18 @@ test("valid transaction", () => {
       money: "80",
       typeOfTransaction: "debited"
     },
+    {
+      account: {type: "account", no: "3006"},
+      balance: "",
+      money: "49.0",
+      typeOfTransaction: "debited"
+    },
+    {
+      account: {type: "account", no: "12345"},
+      balance: "12345.30",
+      money: "100",
+      typeOfTransaction: "debited"
+    }
   ];
 
   messages.forEach((message, index) => {

@@ -9,16 +9,18 @@ const trnKeywords = ['debited', 'credited', 'payment', 'spent'];
 
 function getTypeOfTransaction(message) {
   for (let keyword of trnKeywords) {
-    if (message.includes(keyword)) {
-      return keyword;
+    for (const word of message) {
+      if (word.includes(keyword)) {
+        return keyword;
+      }
     }
   }
 
-  return "";
+  return '';
 }
 
 function getCard(message) {
-  if (typeof message === "string") {
+  if (typeof message === 'string') {
     message = processMessage(message);
   }
 
@@ -46,61 +48,88 @@ function getCard(message) {
   }
 }
 
+function extractBondedAccountNo(accountNo) {
+  const strippedAccountNo = accountNo.replace('ac', '');
+
+  if (isNaN(Number(strippedAccountNo))) {
+    return '';
+  } else {
+    return strippedAccountNo;
+  }
+}
+
 function getAccount(message) {
-  if (typeof message === "string") {
+  if (typeof message === 'string') {
     message = processMessage(message);
   }
 
-  const accountIndex = message.indexOf('ac');
+  let accountIndex = -1;
   let account = {
     type: '',
     no: '',
   };
 
-  // No occurence of the word "ac". Check for "card"
-  if (accountIndex !== -1) {
-    // find index of ac
-    account.no = message[accountIndex + 1];
-    account.type = 'account';
+  for (const [index, word] of message.entries()) {
+    if (word === 'ac') {
+      if (index + 1 < message.length) {
+        const accountNo = trimLeadingAndTrailingChars(message[index + 1]);
 
-    // If wrong data is found or if it is a false positive
-    // Search fot "card"
-    // Else return the account data
-    if (isNaN(Number(account.no))) {
-      return getCard(message);
-    } else {
-      return account;
+        if (isNaN(Number(accountNo))) {
+          // continue searching for a valid account number
+          continue;
+        } else {
+          accountIndex = index;
+          account.type = 'account';
+          account.no = accountNo;
+          return account;
+        }
+      } else {
+        // continue searching for a valid account number
+        continue;
+      }
+    } else if (word.includes('ac')) {
+      const extractedAccountNo = extractBondedAccountNo(word);
+
+      if (extractedAccountNo === '') {
+        continue;
+      } else {
+        accountIndex = index;
+        account.type = 'account';
+        account.no = extractedAccountNo;
+        return account;
+      }
     }
-  } else {
+  }
+
+  // No occurence of the word "ac". Check for "card"
+  if (accountIndex === -1) {
     return getCard(message);
   }
 }
 
 function trimLeadingAndTrailingChars(str) {
-  const strLength = str.length;
+  // if (strLength < 3) {
+  //   return str;
+  // } else {
+  const [first, last] = [str[0], str[str.length - 1]];
 
-  if (strLength < 3) {
-    return str;
-  } else {
-    const [first, last] = [str[0], str[strLength - 1]];
-
-    if (isNaN(Number(last))) {
-      str = str.slice(0, -1);
-    }
-    if (isNaN(Number(first))) {
-      str = str.slice(1);
-    }
-
-    return str;
+  if (isNaN(Number(last))) {
+    str = str.slice(0, -1);
   }
+  if (isNaN(Number(first))) {
+    str = str.slice(1);
+  }
+
+  return str;
+  // }
 }
 
 function getBalance(message) {
-  if (typeof message !== "string") {
-    return "";
+  if (typeof message !== 'string') {
+    return '';
   }
 
-  message = processMessage(message).join(" ");
+  message = processMessage(message).join(' ');
 
   for (const word of balanceKeywords) {
     if (message.includes(word)) {
@@ -120,7 +149,7 @@ function getBalance(message) {
             return '';
           } else {
             balance = trimLeadingAndTrailingChars(words[balanceIndex]);
-            balance = balance.replace(/,/g, '');
+            balance = balance.replace(/[,a-zA-Z]+/g, '');
 
             if (isNaN(Number(balance))) {
               return '';
@@ -136,7 +165,7 @@ function getBalance(message) {
                 balance = words.length;
                 balance = trimLeadingAndTrailingChars(words[index + 1]);
                 balance = balance.replace(/,/g, '');
-                
+
                 return balance;
               } else {
                 return '';
@@ -151,11 +180,11 @@ function getBalance(message) {
     }
   }
 
-  return "";
+  return '';
 }
 
 function getMoneySpent(message) {
-  if (typeof message === "string") {
+  if (typeof message === 'string') {
     message = processMessage(message);
   }
 
@@ -254,8 +283,9 @@ function getTransactionInfo(message) {
   const account = getAccount(processedMessage);
   const balance = getBalance(processedMessage.join(' '));
   const money = getMoneySpent(processedMessage);
-  let trn = "";
-  const isValid = [balance, money, account.no].filter(x => x !== "").length >= 2
+  let trn = '';
+  const isValid =
+    [balance, money, account.no].filter((x) => x !== '').length >= 2;
 
   if (isValid) {
     trn = getTypeOfTransaction(processedMessage);
