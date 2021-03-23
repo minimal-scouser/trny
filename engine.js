@@ -108,9 +108,6 @@ function getAccount(message) {
 }
 
 function trimLeadingAndTrailingChars(str) {
-  // if (strLength < 3) {
-  //   return str;
-  // } else {
   const [first, last] = [str[0], str[str.length - 1]];
 
   if (isNaN(Number(last))) {
@@ -121,7 +118,41 @@ function trimLeadingAndTrailingChars(str) {
   }
 
   return str;
-  // }
+}
+
+function extractBalance(index, message, length) {
+  let balance = '';
+  let saw_number = false;
+  let invalid_char_count = 0;
+  let char = '';
+
+  while (index < length) {
+    char = message[index];
+
+    if ('0' <= char && char <= '9') {
+      saw_number = true;
+      // is_start = false;
+      balance += char;
+    } else {
+      if (saw_number === false) {
+      } else {
+        if (char === '.') {
+          if (invalid_char_count === 1) {
+            break;
+          } else {
+            balance += char;
+            invalid_char_count += 1;
+          }
+        } else if (char !== ",") {
+          break;
+        }
+      }
+    }
+
+    ++index;
+  };
+
+  return balance;
 }
 
 function getBalance(message) {
@@ -130,57 +161,49 @@ function getBalance(message) {
   }
 
   message = processMessage(message).join(' ');
+  let index_of_keyword = -1;
+  let balance = '';
 
   for (const word of balanceKeywords) {
-    if (message.includes(word)) {
-      const words = message.split(' ');
-      const keyWordWords = word.split(' ');
-      let index = words.indexOf(keyWordWords[0]);
+    index_of_keyword = message.indexOf(word);
 
-      if (index === -1) {
-        return '';
-      } else {
-        let balance = words[index + keyWordWords.length];
-
-        if (balance === 'rs.') {
-          const balanceIndex = index + keyWordWords.length + 1;
-
-          if (balanceIndex >= words.length) {
-            return '';
-          } else {
-            balance = trimLeadingAndTrailingChars(words[balanceIndex]);
-            balance = balance.replace(/[,a-zA-Z]+/g, '');
-
-            if (isNaN(Number(balance))) {
-              return '';
-            }
-
-            return balance;
-          }
-        } else {
-          // loop until you find rs.
-          while (index < words.length) {
-            if (words[index] === 'rs.') {
-              if (index + 1 < words.length) {
-                balance = words.length;
-                balance = trimLeadingAndTrailingChars(words[index + 1]);
-                balance = balance.replace(/,/g, '');
-
-                return balance;
-              } else {
-                return '';
-              }
-            }
-            ++index;
-          }
-
-          return '';
-        }
-      }
+    if (index_of_keyword !== -1) {
+      index_of_keyword += word.length;
+      break;
+    } else {
+      continue;
     }
   }
 
-  return '';
+  // found the index of keyword, moving on to finding 'rs.' occuring after index_of_keyword
+  let index = index_of_keyword;
+  let index_of_rs = -1;
+  let nextThreeChars = message.substr(index, 3);
+
+  index += 3;
+
+  while (index < message.length) {
+    // discard first char
+    nextThreeChars = nextThreeChars.slice(1);
+    // add the current char at the end
+    nextThreeChars += message[index];
+
+    if (nextThreeChars === 'rs.') {
+      index_of_rs = index + 2;
+      break;
+    }
+
+    ++index;
+  }
+
+  // no occurence of 'rs.'
+  if (index_of_rs === -1) {
+    return '';
+  }
+
+  balance = extractBalance(index_of_rs, message, message.length);
+
+  return balance;
 }
 
 function getMoneySpent(message) {
