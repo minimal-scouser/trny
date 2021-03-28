@@ -61,7 +61,7 @@ test("valid transaction", () => {
       account: {type: "account", no: "0123"},
       balance: "",
       money: "46000",
-      typeOfTransaction: "payment"
+      typeOfTransaction: "debited"
     },
     {
       account: {type: "account", no: "126"},
@@ -79,7 +79,7 @@ test("valid transaction", () => {
       account: {type: "card", no: "91"},
       balance: "",
       money: "555.00",
-      typeOfTransaction: "spent"
+      typeOfTransaction: "debited"
     },
     {
       account: {type: "", no: ""},
@@ -139,7 +139,7 @@ test("valid transaction", () => {
       account: {type: "card", no: "1234"},
       balance: "7281.19",
       money: "56.00",
-      typeOfTransaction: ""
+      typeOfTransaction: "debited"
     }
   ];
 

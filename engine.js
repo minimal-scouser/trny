@@ -8,12 +8,20 @@ const balanceKeywords = [
 const trnKeywords = ['debited', 'credited', 'payment', 'spent'];
 
 function getTypeOfTransaction(message) {
-  for (let keyword of trnKeywords) {
-    for (const word of message) {
-      if (word.includes(keyword)) {
-        return keyword;
-      }
-    }
+  const creditPattern = /(?:credited|credit)/gi;
+  const debitPattern = /(?:debited|debit)/gi
+  const miscPattern = /(?:payment|spent)/gi;
+
+  if (typeof message !== 'string') {
+    message = message.join(' ');
+  }
+
+  if (debitPattern.test(message)) {
+    return 'debited';
+  } else if (creditPattern.test(message)) {
+    return 'credited';
+  } else if (miscPattern.test(message)) {
+    return 'debited';
   }
 
   return '';
