@@ -4,6 +4,17 @@ A javascript package that extracts transactional info like account number, money
 
 Demo [here](https://minimal-scouser.github.io/trny-demo)
 
+Note: After developing this I was very excited and tested it on some bank alerts. The results were disappointing(I should have seen this coming). 
+
+The parsing logic is weak. There are soooo many different formats of bank alerts out there. 
+
+So if you want to improve this or doing something like this you may find the following steps useful
+
+1. Collect as much varied data as you can.
+2. Then work on parsing logic.
+
+Data is king here. Without that your parser/engine will fail.
+
 ## Installation
 
 ```bash
