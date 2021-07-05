@@ -1,18 +1,24 @@
-const engine = require('../engine');
+const engine = require("../engine");
 
-test('type of incomplete transactions', () => {
-  const messages = ['debited', "credited", "", "debited credited", "ac rs. 300 credited avbl bal 200"];
+test("type of incomplete transactions", () => {
+  const messages = [
+    "debited",
+    "credited",
+    "",
+    "debited credited",
+    "ac rs. 300 credited avbl bal 200",
+  ];
 
   messages.forEach((message) => {
     const processedMessage = engine.processMessage(message);
     const [account, money, balance] = [
       engine.getAccount(processedMessage),
       engine.getMoneySpent(processedMessage),
-      engine.getBalance(processedMessage.join(' ')),
+      engine.getBalance(processedMessage.join(" ")),
     ];
 
     if (account.no && money && balance) {
-      expect(engine.getTypeOfTransaction(message)).toBe('');
+      expect(engine.getTypeOfTransaction(message)).toBe("");
     }
   });
 });
@@ -54,110 +60,110 @@ test("valid transaction", () => {
       typeOfTransaction: "debited",
     },
     {
-      account: {type: "account", no: "0123"},
+      account: { type: "account", no: "0123" },
       balance: "5603.54",
       money: "3211.00",
-      typeOfTransaction: "debited"
+      typeOfTransaction: "debited",
     },
     {
-      account: {type: "account", no: "1234"},
+      account: { type: "account", no: "1234" },
       balance: "",
       money: "248759.00",
-      typeOfTransaction: "debited"
+      typeOfTransaction: "debited",
     },
     {
-      account: {type: "account", no: "1234"},
+      account: { type: "account", no: "1234" },
       balance: "2088505.04",
       money: "15160.00",
-      typeOfTransaction: "credited"
+      typeOfTransaction: "credited",
     },
     {
-      account: {type: "account", no: "0123"},
+      account: { type: "account", no: "0123" },
       balance: "",
       money: "46000",
-      typeOfTransaction: "debited"
+      typeOfTransaction: "debited",
     },
     {
-      account: {type: "account", no: "126"},
+      account: { type: "account", no: "126" },
       balance: "",
       money: "46000.00",
-      typeOfTransaction: "debited"
+      typeOfTransaction: "debited",
     },
     {
-      account: {type: "card", no: "12344"},
+      account: { type: "card", no: "12344" },
       balance: "",
       money: "248759",
-      typeOfTransaction: "credited"
+      typeOfTransaction: "credited",
     },
     {
-      account: {type: "card", no: "91"},
+      account: { type: "card", no: "91" },
       balance: "",
       money: "555.00",
-      typeOfTransaction: "debited"
+      typeOfTransaction: "debited",
     },
     {
-      account: {type: "", no: ""},
+      account: { type: "", no: "" },
       balance: "",
       money: "3499.00",
-      typeOfTransaction: ""
+      typeOfTransaction: "",
     },
     {
-      account: {type: "", no: ""},
+      account: { type: "", no: "" },
       balance: "",
       money: "399.00",
-      typeOfTransaction: ""
+      typeOfTransaction: "",
     },
     {
-      account: {type: "card", no: "91000"},
+      account: { type: "card", no: "91000" },
       balance: "",
       money: "",
-      typeOfTransaction: ""
+      typeOfTransaction: "",
     },
     {
-      account: {type: "account", no: "123456789"},
+      account: { type: "account", no: "123456789" },
       balance: "",
       money: "",
-      typeOfTransaction: ""
+      typeOfTransaction: "",
     },
     {
-      account: {type: "account", no: "123456"},
+      account: { type: "account", no: "123456" },
       balance: "57575",
       money: "399",
-      typeOfTransaction: "debited"
+      typeOfTransaction: "debited",
     },
     {
-      account: {type: "account", no: "1234"},
+      account: { type: "account", no: "1234" },
       balance: "21719.25",
       money: "",
-      typeOfTransaction: ""
+      typeOfTransaction: "",
     },
     {
-      account: {type: "account", no: "00123"},
+      account: { type: "account", no: "00123" },
       balance: "6802.04",
       money: "80",
-      typeOfTransaction: "debited"
+      typeOfTransaction: "debited",
     },
     {
-      account: {type: "account", no: "12345"},
+      account: { type: "account", no: "12345" },
       balance: "",
       money: "49.0",
-      typeOfTransaction: "debited"
+      typeOfTransaction: "debited",
     },
     {
-      account: {type: "account", no: "12345"},
+      account: { type: "account", no: "12345" },
       balance: "12345.30",
       money: "100",
-      typeOfTransaction: "debited"
+      typeOfTransaction: "debited",
     },
     {
-      account: {type: "card", no: "1234"},
+      account: { type: "card", no: "1234" },
       balance: "7281.19",
       money: "56.00",
-      typeOfTransaction: "debited"
-    }
+      typeOfTransaction: "debited",
+    },
   ];
 
   messages.forEach((message, index) => {
     expect(engine.getTransactionInfo(message)).toStrictEqual(results[index]);
   });
-})
+});
