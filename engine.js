@@ -7,9 +7,9 @@ const balanceKeywords = [
 ];
 const trnKeywords = ['debited', 'credited', 'payment', 'spent'];
 
-function getTypeOfTransaction(message) {
-  const creditPattern = /(?:credited|credit)/gi;
-  const debitPattern = /(?:debited|debit)/gi
+function getTypeOfTransaction(message) {  
+  const creditPattern = /(?:credited|credit|deposited)/gi;
+  const debitPattern = /(?:debited|debit|deducted)/gi;
   const miscPattern = /(?:payment|spent)/gi;
 
   if (typeof message !== 'string') {

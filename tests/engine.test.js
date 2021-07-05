@@ -19,6 +19,8 @@ test('type of incomplete transactions', () => {
 
 test("valid transaction", () => {
   const messages = [
+    "an Amount of Rs 500 has been deposited from your Account ending with 3187",
+    "an Amount of Rs 500 has been deducted from your Account ending with 3187",
     "Your a/c XX0123 is debited on 12/34/1234 by INR 3,211.00 towards purchase. Avl Bal: INR 5,603.54.",
     "Dear Customer, Rs.248,759.00 is debited from A/c XXXX1234 for BillPay/Credit Card payment via Example Bank NetBanking. Call XXXXXXXX123XXX if txn not done by you",
     "UPDATE: Your A/c XX1234 credited with INR 15,160.00 on 12-34-1234 by A/c linked to mobile no XX12XX(IMPS Ref No. XX123XXXXX123) Available bal: INR 2,088,505.04",
@@ -39,6 +41,18 @@ test("valid transaction", () => {
   ];
 
   const results = [
+    {
+      account: { type: "account", no: "3187" },
+      balance: "",
+      money: "500",
+      typeOfTransaction: "credited",
+    },
+    {
+      account: { type: "account", no: "3187" },
+      balance: "",
+      money: "500",
+      typeOfTransaction: "debited",
+    },
     {
       account: {type: "account", no: "0123"},
       balance: "5603.54",
