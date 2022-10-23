@@ -1,5 +1,7 @@
 # trny
 
+🛠 A newer version of this package is in the works
+
 A javascript package that extracts transactional info like account number, money spent, balance and type of transaction from a string
 
 Demo [here](https://minimal-scouser.github.io/trny-demo)
